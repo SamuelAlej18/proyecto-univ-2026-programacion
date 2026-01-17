@@ -8,28 +8,42 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-    <div id="usuarioInicioDiv">
-        <h2>Inicio de sesión:</h2>
-        <h3>Introduce tu nombre de usuario:</h3>
+    <div id="bienvenida" class="ocupaTodaLaPantalla">
+        <h1>Bienvenido al planificador de entrenamiento</h1>
+        <h2>Ya tienes una cuenta?</h2>
+        <button type="button">Ya</button>
+        <button type="button">No</button>
+    </div>
+    
+    <div id="divInicioSes" class="ocupaTodaLaPantalla elementoTransparente">
+        <h1>Inicio de sesión:</h1>
+        <h2>Introduce tu nombre de usuario:</h2>
+        <input type="text" id="inputNombreUsuarioInicSes">
 
-     <input type="text" id="usuarioNombre">
         <h2>Introduce una contraseña:</h2>
-        <input type="password" id="usuarioPassword">
-        <button type="button">Aceptar</button>
+        <input type="password" id="inputContrInicSes">
+        <button type="button" id="btnIniciar">Aceptar</button>
     </div>
 
-    <div id="usuarioRegistroDiv">
-        <h2>Registro</h2>
-        <h3>Introduce un nombre de usuario:</h3>
-
-     <input type="text" id="usuarioNombre">
-        <h3>Introduce una contraseña:</h3>
-        <input type="password" id="usuarioPassword">
+    <div id="divRegistro" class="ocupaTodaLaPantalla elementoTransparente">
+        <h1>Registro</h1>
+        <h2>Introduce un nombre de usuario:</h2>
+        <input type="text" id="inputNombreUsuarioRegistro">
         
-        <h3>Repite la contraseña:</h3>
-        <input type="password" id="usuarioPassword">
-        <button type="button">Aceptar</button>
+        <h2>Introduce una contraseña:</h2>
+        <input type="password" id="inputContr1Registro">
+        <h2>Repite la contraseña:</h2>
+        <input type="password" id="inputContr2Registro">
+        <button type="button" id="btnAceptarRegistro">Aceptar</button>
+        <div id="errorRegistro">
+            <h3>La clave tiene entre 8 y 25 caracteres</h3>
+            <h3>La clave está entre los valores permitidos (A-Z, a-z, 0-9. No se permiten espacios, solo "." y "_")</h3>
+            <h3>Debe contener una mayúscula</h3>
+            <h3>Debe contener un número</h3>
+        </div>
     </div>
+
+    
 
 </body>
 </html>

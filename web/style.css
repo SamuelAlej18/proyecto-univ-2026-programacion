@@ -1,7 +1,32 @@
-#usuarioRegistroDiv{
-    border: solid black 1px;
+*{
+    margin: 0;
+    padding: 0;
+}
+.ocupaTodaLaPantalla{
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    backdrop-filter: blur(2px);
+    background-color: rgba(0, 0, 255, 0.318);
 }
 
-#usuarioInicioDiv{
-    border: solid hsl(254, 100%, 50%) 1px;
+#bienvenida{
+    z-index: 3;
+}
+#divInicioSes{
+    z-index: 2;
+}
+#divRegistro{
+    z-index: 2;
+}
+.elementoTransparente{
+    filter: opacity(0);
+    transition: filter 0.5s;
+}
+.elementoVisible{
+    filter: opacity(100%);
+    transition: filter 0.3s;
+}
+div{
+    border: solid black 1px;
 }
