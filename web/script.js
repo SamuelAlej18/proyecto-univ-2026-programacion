@@ -29,9 +29,7 @@ let contieneEnteros = false
 let valoresPermitidosClave = true
 let valoresPermitidosUsuario = true
 let clavesIguales = true
-const valoresPermitidos = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890._"
-const mayusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-const enteros = "1234567890"
+const valoresPermitidos = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz._"    
 
 /*Funcionalidades botones div bienvenida*/
 botonesDivBienvenida[0].addEventListener('click', ()=>{
@@ -80,33 +78,108 @@ function verificarValores(valoresPermitidos, valor, n){
     return true
 }
 
+
+function validarClave(clave, segundaClave, valoresPermitidos){
+    const resultados = [true, true, false, false, false] /*0: cantidad de caracteres, 1: valores permitidos, 2: mayúscula, 3:entero, 4: claves iguales*/
+    if(clave.length<8 || clave.length>25){
+        resultados[0] = false
+    }
+    
+    if (clave == segundaClave){
+        resultados[4] = true
+    }
+
+    for(const i of clave){
+        if (valoresPermitidos.slice(0, 26).includes(i)){
+            resultados[2] = true
+        }
+        else if(valoresPermitidos.slice(26, 36).includes(i)){
+            resultados[3] = true
+        }
+
+        else if(!valoresPermitidos.slice(36, 64).includes(i)){
+            resultados[1] = false
+        }
+        
+        if(!resultados[1] && resultados[2] && resultados[3]){ /*Para hacer que el bucle no siga si ya se tienen todos los resultados*/
+            return resultados
+        }
+    }
+    return resultados
+}
+
+/*Verificar que esté bien el slice
+console.log(valoresPermitidos.slice(0, 26),
+valoresPermitidos.slice(26, 36),
+valoresPermitidos.slice(36, 64))
+*/
+
+
+/*Probar que funcione correctamente la función*/
+console.log(
+    validarClave('A1hol...','A1hol...', valoresPermitidos), /*0: cantidad de caracteres, 1: valores permitidos, 2: mayúscula, 3:entero, 4: claves iguales*/
+    validarClave('AAdsfsdn', 'AAdsfsdn', valoresPermitidos),
+    validarClave('11dsfsdn', '11dsfsdno', valoresPermitidos),
+    validarClave('','', valoresPermitidos),
+    validarClave('A1hol ...','A1hol ...', valoresPermitidos),
+    validarClave('hol','hol', valoresPermitidos),
+    validarClave('1hol','hol', valoresPermitidos),
+    validarClave('1hol','1hol', valoresPermitidos),
+    validarClave('Ahol','Ahol', valoresPermitidos),
+    validarClave('A1hol.........................................','A1hol...............................................', valoresPermitidos),
+)
+
+function validarUsuario(usuario, valoresPermitidos){
+    const resultados = [true, true] /*0: cantidad de caracteres, 1: valores permitidos */
+    
+    if(usuario.length<8 || usuario.length>25){
+        resultados[0] = false
+    }
+
+    for(const i of usuario){
+        if(!valoresPermitidos.includes(i)){
+            resultados[1] = false
+            return resultados
+        }
+    }
+    return resultados
+}
+
+/*Probar que funcione correctamente la función
+console.log(validarUsuario('88888888', valoresPermitidos))
+console.log(validarUsuario('8888888', valoresPermitidos))
+console.log(validarUsuario('88888888888888888888888888888888888888888888888888888888888888888', valoresPermitidos))
+console.log(validarUsuario('Samu elale', valoresPermitidos))
+console.log(validarUsuario('Samuelale88888', valoresPermitidos))
+*/
+
+
 /*Validación de registro de usuario*/
 /*Validar la clave introducida*/
 password1Registro.addEventListener('input', ()=>{
-    const valor = password1Registro.value
-
-    if(cantidadDeCaracteresClave&&(valor.length<8 || valor.length>25) ){
+    const resultados = validarClave(password1Registro.value, password2Registro.value, valoresPermitidos)
+    if(cantidadDeCaracteresClave && !resultados[0]){
         condicionesClave[0].style.color = 'red'
         cantidadDeCaracteresClave = false
     }
-    else if(valor.length<=25 && valor.length>=8){
+    else if(resultados[0]){
         cantidadDeCaracteresClave = true
         condicionesClave[0].style.color = 'black'
     }
 
-    if(!verificarValores(valoresPermitidos, valor, false)){
+    if(!resultados[1]){
         if (valoresPermitidosClave){
             condicionesClave[1].style.color = 'red'
             valoresPermitidosClave = false
         }
-        /*No se usa un and para que no haga nada si la variable está en falso */      
     }
+
     else if(!valoresPermitidosClave){
         condicionesClave[1].style.color = 'black'
         valoresPermitidosClave = true
     }
 
-    if (verificarValores(mayusculas, valor, true)){
+    if (resultados[2]){
         if (!contieneMayusculas){
             condicionesClave[2].style.color = 'black'
             contieneMayusculas = true
@@ -117,7 +190,7 @@ password1Registro.addEventListener('input', ()=>{
     contieneMayusculas = false
     }
 
-    if (verificarValores(enteros, valor, true)){
+    if (resultados[3]){
         if (!contieneEnteros){
             condicionesClave[3].style.color = 'black'
             contieneEnteros = true
@@ -128,7 +201,7 @@ password1Registro.addEventListener('input', ()=>{
     contieneEnteros = false
     }
 
-    if(valor!=password2Registro.value){
+    if(!resultados[4]){
         if(clavesIguales){
             condicionesClave[4].style.color = 'red'
             clavesIguales = false
@@ -139,6 +212,7 @@ password1Registro.addEventListener('input', ()=>{
         clavesIguales = true
     }
 })
+
 password2Registro.addEventListener('input',()=>{
     if(password1Registro.value!=password2Registro.value){
         if(clavesIguales){
@@ -151,10 +225,11 @@ password2Registro.addEventListener('input',()=>{
         clavesIguales = true
     }
 })
+
 /*Validar el usuario introducido*/
 nombreUsuarioRegistro.addEventListener('input', ()=>{
-    const valor = nombreUsuarioRegistro.value
-    if (valor.length<8 || valor.length>25){
+    const resultados = validarUsuario(nombreUsuarioRegistro.value, valoresPermitidos)
+    if (!resultados[0]){
         if(cantidadDeCaracteresUsuario){
             cantidadDeCaracteresUsuario = false
             condicionesUsuario[1].style.color = 'red'
@@ -166,7 +241,7 @@ nombreUsuarioRegistro.addEventListener('input', ()=>{
     }
 
 
-    if (!verificarValores(valoresPermitidos, valor, false)){
+    if (!resultados[1]){
         if(valoresPermitidosUsuario){
             valoresPermitidosUsuario = false
             condicionesUsuario[0].style.color = 'red'
@@ -182,20 +257,31 @@ nombreUsuarioRegistro.addEventListener('input', ()=>{
 /*Validación de intento de inicio de sesión*/
 btnInicioSes.addEventListener('click', ()=>{
     const clave = passwordInicio.value
-    const usuario = nombreDeUsuarioInicio.value
-    if(
-        verificarValores(valoresPermitidos, clave, false)&&
-        verificarValores(mayusculas, clave, true)&&
-        verificarValores(enteros, clave, true)&&
-        clave.length<=25 && clave.length>=8 &&
-        verificarValores(valoresPermitidos, usuario, false)&&
-        usuario.length<=25 && usuario.length>=8
-    ){
-        console.log('solicitud fetch')
+    const resultadosClave = validarClave(clave, clave, valoresPermitidos)
+    const resultadosUsuario = validarUsuario(nombreDeUsuarioInicio.value, valoresPermitidos)
+    let resultadoFinal = true
+    console.log('clave:',clave)
+    console.log(resultadosClave, 'resultados clave', resultadosUsuario, 'resultados usuario')
+    for(const i of resultadosClave){
+        if(!i){
+            resultadoFinal = false
+            break
+        }
+    }
+    
+    if(resultadoFinal){
+        for (const i of resultadosUsuario)
+            if(!i){
+                resultadoFinal = false
+                break
+            }
+    }
+    console.log('resultado final', resultadoFinal)
+
+    if(resultadoFinal){
+        console.log('realizar solicitud fetch')
     }
     else{
-        console.log('usuario o contraseña inválidos')
+        console.log('usuario o contraseña incorrectos')
     }
 })
-
-/*Nota: el nombre de usuario va a poder tener de 5 a 25 caracteres, los mismos valores permitidos, no importa lo de la mayúscula ni el entero.*/
