@@ -11,8 +11,11 @@
     <div id="bienvenida" class="ocupaTodaLaPantalla">
         <h1>Bienvenido al planificador de entrenamiento</h1>
         <h2>Ya tienes una cuenta?</h2>
-        <button type="button">Ya</button>
-        <button type="button">No</button>
+        <div class="divBotones">
+            <button type="button">Ya</button>
+            <button type="button">No</button>
+        </div>
+        
     </div>
     
     <div id="divInicioSes" class="ocupaTodaLaPantalla elementoTransparente">
@@ -22,25 +25,40 @@
 
         <h2>Introduce una contraseña:</h2>
         <input type="password" id="inputContrInicSes">
-        <button type="button" id="btnIniciar">Aceptar</button>
+       
+        <div class="divBotones">
+            <button type="button" id="btnIniciar">Aceptar</button>
+            <button type="button" id="btnCambiarInicioRegistro">Quieres crearte una cuenta?</button>
+        </div>
+        
+        
     </div>
 
     <div id="divRegistro" class="ocupaTodaLaPantalla elementoTransparente">
         <h1>Registro</h1>
         <h2>Introduce un nombre de usuario:</h2>
         <input type="text" id="inputNombreUsuarioRegistro">
+        <div id="errorRegistroUsuario">
+            <h3>Está entre los valores permitidos (A-Z, a-z, 0-9. Sin espacios, solo "." y "_")</h3>
+            <h3 style="color: red;">El usuario tiene de 8 a 25 caracteres</h3>
+        </div>
         
         <h2>Introduce una contraseña:</h2>
         <input type="password" id="inputContr1Registro">
         <h2>Repite la contraseña:</h2>
         <input type="password" id="inputContr2Registro">
-        <button type="button" id="btnAceptarRegistro">Aceptar</button>
-        <div id="errorRegistro">
-            <h3>La clave tiene entre 8 y 25 caracteres</h3>
-            <h3>La clave está entre los valores permitidos (A-Z, a-z, 0-9. No se permiten espacios, solo "." y "_")</h3>
-            <h3>Debe contener una mayúscula</h3>
-            <h3>Debe contener un número</h3>
+        <div id="errorRegistroClave">
+            <h3 style="color: red;">La clave tiene de 8 a 25 caracteres</h3>
+            <h3>Está entre los valores permitidos (A-Z, a-z, 0-9. Sin espacios, solo "." y "_")</h3>
+            <h3 style="color: red;">Contiene una mayúscula</h3>
+            <h3 style="color: red;">Contiene un número</h3>
+            <h3>Claves introducidas iguales</h3>
         </div>
+        <div class="divBotones">
+            <button type="button" id="btnAceptarRegistro">Aceptar</button>
+            <button type="button" id="btnCambiarRegistroInicio">Ya tienes una cuenta?</button>
+        </div>
+
     </div>
 
     

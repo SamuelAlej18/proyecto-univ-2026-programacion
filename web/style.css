@@ -2,31 +2,91 @@
     margin: 0;
     padding: 0;
 }
-.ocupaTodaLaPantalla{
+/*h1{
+    margin: 3px;
+}*/
+h2{
+    margin: 3px;
+}
+h3{
+    margin: 2px;
+}
+body{
+    /*background: url('imgs/fondo.webp') center no-repeat;*/
+    background-size: cover;
     width: 100vw;
     height: 100vh;
-    position: fixed;
-    backdrop-filter: blur(2px);
-    background-color: rgba(0, 0, 255, 0.318);
+    color:  hsl(273, 100%, 50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+button{
+    background: transparent;
+    border: none;
+    background-color: white;
+    color: hsl(273, 100%, 50%);
+    border: solid 1px hwb(273 0% 49%);
+    margin: 3px;
+    padding: 3px;
+    width: 45%;
+}
+
+button:hover{
+    border-color: black;
+    color: rgb(0, 0, 0);
+    transform: scale(1.05);
+}
+input{
+    padding: 3px;
+    margin: 1px 3px 3px 3px;
+    color: hsl(273, 100%, 50%);
+    border: hwb(273 0% 49%) solid 1.5px;
+}
+
+.ocupaTodaLaPantalla{
+    min-width: 100vw;
+    max-width: 600px;
+    min-height: 100vh;
+    /*position: fixed;*/
+    top: 0;
+    border: blueviolet solid 1px;
+}
+.divBotones{
+    display: flex;
+}
+.divBotones>button{
+    height: 45px;
+    width: 160px;
+}
 #bienvenida{
     z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 #divInicioSes{
-    z-index: 2;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
+
 #divRegistro{
-    z-index: 2;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 .elementoTransparente{
-    filter: opacity(0);
+   /* filter: opacity(0);*/
+   display: none;
     transition: filter 0.5s;
 }
 .elementoVisible{
-    filter: opacity(100%);
-    transition: filter 0.3s;
+    /*filter: opacity(100%);*/
+    display: flex;
+    transition: filter 0.5s;
 }
-div{
-    border: solid black 1px;
-}
+
+
