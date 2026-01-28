@@ -59,12 +59,20 @@ def crearUsuario(usuario, clave):
             usuarios[usuario] = clave
             with open('datos/usuarios.json', 'w', encoding = 'utf-8') as jsonNuevoUsuarios:
                 json.dump(usuarios, jsonNuevoUsuarios, indent = 4)
+            
+            datosUsuario = {
+                "eventosPendientes" : {},
+                "eventosTerminados": {},
+                "eventosRecurrentes" : {}
+            }
+
+            with open(f'datos/eventos/{usuario}.json', 'w', encoding = 'utf-8') as archivoNuevo:
+                json.dump(datosUsuario, archivoNuevo, indent=2, ensure_ascii=False)
+
             print(f'El usuario {usuario} ha sido creado exitosamente')
         else:
             return print('El usuario ya existe')
     else:
         return print('el usuario ingresado no es válido') #*************************************************************
     
-crearUsuario("samuelalejandrov", "SSS11111")
-crearUsuario("EstoEsunEjemplo233", "Saaaaaa22a")
-
+crearUsuario('amirkalvera', 'A1973642aa')

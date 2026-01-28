@@ -11,9 +11,8 @@ h2{
 h3{
     margin: 2px;
 }
+
 body{
-    /*background: url('imgs/fondo.webp') center no-repeat;*/
-    background-size: cover;
     width: 100vw;
     height: 100vh;
     color:  hsl(273, 100%, 50%);
@@ -40,19 +39,16 @@ button:hover{
 }
 input{
     padding: 3px;
-    margin: 1px 3px 3px 3px;
+    margin: 2px 3px 15px 3px;
     color: hsl(273, 100%, 50%);
     border: hwb(273 0% 49%) solid 1.5px;
 }
-
-.ocupaTodaLaPantalla{
-    min-width: 100vw;
-    max-width: 600px;
-    min-height: 100vh;
-    /*position: fixed;*/
-    top: 0;
-    border: blueviolet solid 1px;
+.divsIniciales{
+    padding: 60px;
+    background-color: black;
+    border: 1px hsl(273, 100%, 50%) solid;
 }
+
 .divBotones{
     display: flex;
 }
@@ -71,22 +67,36 @@ input{
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    z-index: 2;
 }
 
 #divRegistro{
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    z-index: 2;
 }
 .elementoTransparente{
-   /* filter: opacity(0);*/
    display: none;
     transition: filter 0.5s;
 }
 .elementoVisible{
-    /*filter: opacity(100%);*/
     display: flex;
     transition: filter 0.5s;
 }
 
 
+
+
+/*Efecto de partículas*/
+#particles-js {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    background-position: 50% 50%;
+    z-index: 1;
+}
+
+
+/*Falta hacer que los divs aparezcan suave en la pantalla.*/ 
