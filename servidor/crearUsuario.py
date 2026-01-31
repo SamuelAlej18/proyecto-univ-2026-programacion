@@ -50,28 +50,20 @@ print(verificarUsuarioIngresado('holamundo', 'S1234567', valoresPermitidos),
 
 import json
 
-def crearUsuario(usuario, clave):
-    if verificarUsuarioIngresado(usuario, clave):
+def crearUsuario(usuario, clave, claveSecreta):
+    if verificarUsuarioIngresado(usuario, clave) and claveSecreta == 'El concierto': #<-- clave secreta aquí
         with open('datos/usuarios.json', 'r', encoding='utf-8') as jsonUsuarios:
             usuarios = json.load(jsonUsuarios)
-
+        
         if usuario not in usuarios:
             usuarios[usuario] = clave
             with open('datos/usuarios.json', 'w', encoding = 'utf-8') as jsonNuevoUsuarios:
                 json.dump(usuarios, jsonNuevoUsuarios, indent = 4)
             
-            datosUsuario = {
-                "eventosPendientes" : {},
-                "eventosTerminados": {},
-                "eventosRecurrentes" : {}
-            }
-
-            with open(f'datos/eventos/{usuario}.json', 'w', encoding = 'utf-8') as archivoNuevo:
-                json.dump(datosUsuario, archivoNuevo, indent=2, ensure_ascii=False)
 
             print(f'El usuario {usuario} ha sido creado exitosamente')
         else:
-            return print('El usuario ya existe')
+            return print('El usuario ya existe')#**************************************
     else:
         return print('el usuario ingresado no es válido') #*************************************************************
     
