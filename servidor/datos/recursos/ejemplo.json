@@ -1,0 +1,12 @@
+[
+    {
+        "nombreEvento" : "Ejemplo de nombre",
+        "lugar" : "Ejemplo de lugar",
+        "momentoInicial": "momento",
+        "momentoFinal": "momento",
+        "recursos": {
+            "guitarra": 15,
+            "amplificadores": 3
+        }
+    }
+]
