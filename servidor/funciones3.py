@@ -164,43 +164,72 @@ def obtenerColisiones(listaEventos, momentoInicio, momentoFin):
 
     return colisiones
 
-def verificarTotalDeRecursosPosible(recursosNecesarios): #esto verifica si la demanda total es menor a la del inventario total y retorna booleano
-    print('pendiente')
+def verificarTotalDeRecursosPosible(recursosNecesarios, inventario): #esto verifica si la demanda total de recursos es menor o igual al inventario disponible y retorna booleano
+    for clave, valor in recursosNecesarios.items():
+        if clave not in inventario: #Falta definir el inventario
+            return False  
+        if valor > inventario[clave]:
+            return False
+    return True
 
-def sumarRecursosDosEventos(recursosEvento1, recursosEvento2):
-    recursos = recursosEvento1
-    for clave, valor in recursosEvento2.items():
-        if clave in recursos:
-            recursos[clave] += valor
-        else:
-            recursos[clave] = valor
+def insertarPuntoOrdenado(listaPuntos, nuevoPunto):
+    tiempoNuevo, tipoNuevo, recursosNuevo = nuevoPunto
+    izquierda = 0
+    derecha = len(listaPuntos)
     
-    return recursos
-
-def sumarRecursosVariosEventos(listaEventos):
-    recursosAnteriores = {}
-    for i in listaEventos:
-        recursosAnteriores = sumarRecursosDosEventos(recursosAnteriores, i["recursos"])
-    return recursosAnteriores
-
-
-
-
-
-
+    while izquierda < derecha:
+        medio = (izquierda + derecha) // 2
+        tiempoMedio, tipoMedio, recursosMedio = listaPuntos[medio]
+        
+        if tiempoNuevo < tiempoMedio:
+            derecha = medio
+        elif tiempoNuevo > tiempoMedio:
+            izquierda = medio + 1
+        else:
+            if tipoNuevo == "fin" and tipoMedio == "inicio":
+                derecha = medio
+            elif tipoNuevo == "inicio" and tipoMedio == "fin":
+                izquierda = medio + 1
+            else:
+                izquierda = medio + 1
+    
+    listaPuntos.insert(izquierda, nuevoPunto)
 
 
 def calcularMayorDemandaDeRecursos(listaDeEventos, momentoInicio, momentoFin, recursosNecesarios):
-    colisionesIniciales = obtenerColisiones(listaDeEventos, momentoInicio, momentoFin)
+    colisiones = obtenerColisiones(listaDeEventos, momentoInicio, momentoFin)
     
-    if len(colisionesIniciales) == 0:
-        return verificarTotalDeRecursosPosible(recursosNecesarios)
+    eventos = colisiones + [{ #agregar el evento a la lista de colisiones
+        "momentoInicio": momentoInicio,
+        "momentoFin": momentoFin,
+        "recursos": recursosNecesarios
+    }]
     
-    def hallarIntervalos(posiblesColisiones):
-        for i in posiblesColisiones:
-            colisiones = obtenerColisiones(posiblesColisiones)
-            totalRecursos = sumarRecursosDosEventos(sumarRecursosVariosEventos(colisiones), recursosNecesarios)
-            verificarTotalDeRecursosPosible()
+    listaDePuntos = []
+    for evento in eventos:
+        insertarPuntoOrdenado(listaDePuntos, (evento["momentoInicio"], "inicio", evento["recursos"]))
+        insertarPuntoOrdenado(listaDePuntos, (evento["momentoFin"], "fin", evento["recursos"]))
+    
+    #Notar que los puntos almacenados son tuplas que tienn el tipo de punto que son para luego procesar restando o sumando en dependencia de lo que corresponda en el barrido
+    demandaActual = {}     
+    maximaDemanda = {}      
+    
+    for tiempo, tipo, recursos in listaDePuntos:
+        if tipo == "inicio":
+            for clave, valor in recursos.items():
+                demandaActual[clave] = demandaActual.get(clave, 0) + valor
+        else:  
+            for clave, valor in recursos.items():
+                if clave in demandaActual:
+                    demandaActual[clave] -= valor
+        
+        for clave, valor in demandaActual.items():
+            if clave not in maximaDemanda or valor > maximaDemanda[clave]:
+                maximaDemanda[clave] = valor
+    
+    #Verificar si la máxima demanda es posible
+    return verificarTotalDeRecursosPosible(maximaDemanda)
+
 
 
 
