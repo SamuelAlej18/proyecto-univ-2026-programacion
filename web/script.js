@@ -1,3 +1,7 @@
+const body = document.querySelector('body')
+const divParticlesJS = document.getElementById('particles-js')
+const url = 'http://localhost:5000/'
+
 /*Div bienvenida */
 const divBienvenida = document.getElementById('bienvenida')
 const botonesDivBienvenida = divBienvenida.querySelectorAll('button')
@@ -16,7 +20,7 @@ const nombreUsuarioRegistro = document.getElementById('inputNombreUsuarioRegistr
 const password1Registro = document.getElementById('inputContr1Registro')
 const errorRegistroClave = document.getElementById('errorRegistroClave')
 const errorRegistroUsuario = document.getElementById('errorRegistroUsuario')
-const condicionesUsuario = document.querySelectorAll('h3')
+const condicionesUsuario = document.querySelectorAll('#errorRegistroUsuario h3')
 const btnRegistro = document.getElementById('btnAceptarRegistro')
 const condicionesClave = errorRegistroClave.querySelectorAll('h3')
 const claveSecreta = document.getElementById('claveSecreta')
@@ -25,6 +29,8 @@ const divRepetirClave = document.getElementById('divRepetirClave')
 const btnCancelarRepetirClave = document.getElementById('btnCancelarRepetirClave')
 const password2Registro = document.getElementById('inputContr2Registro')
 
+const divProcesarEventos = document.getElementById('procesamientoDeEventos')
+
 /*Variables Js */
 let cantidadDeCaracteresClave = false
 let cantidadDeCaracteresUsuario = false
@@ -32,7 +38,6 @@ let contieneMayusculas = false
 let contieneEnteros = false
 let valoresPermitidosClave = true
 let valoresPermitidosUsuario = true
-const valoresPermitidos = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz._"    
 
 /*Funcionalidades botones div bienvenida*/
 botonesDivBienvenida[0].addEventListener('click', ()=>{
@@ -45,7 +50,7 @@ botonesDivBienvenida[1].addEventListener('click', ()=>{
     divRegistro.classList.add('elementoVisible')
 })
 
-/*Cambiar entre la pantalla de registro y la de inicio de sesión */
+/*Cambiar entre registro e inicio*/
 btnCambiarInicioRegistro.addEventListener('click', ()=>{
     divRegistro.classList.add('elementoVisible')
     divRegistro.classList.remove('elementoTransparente')
@@ -60,68 +65,43 @@ btnCambiarRegistroInicio.addEventListener('click', ()=>{
     divInicioSes.classList.remove('elementoTransparente')
 })
 
-
-/*Validar intento de registro: */
+/*Validar registro*/
 btnRegistro.addEventListener('click', ()=>{
     if(
         cantidadDeCaracteresClave && cantidadDeCaracteresUsuario 
         && contieneMayusculas && contieneEnteros 
         && valoresPermitidosClave && valoresPermitidosUsuario 
-        &&  claveSecreta.value.length > 7
+        && claveSecreta.value.length > 7
     ){
         divRepetirClave.style.visibility = 'visible'
         divRepetirClave.style.filter = 'opacity(100%)'
     }
 })
 
-/*Salir de repetir clave */
 btnCancelarRepetirClave.addEventListener('click', ()=>{
     divRepetirClave.style.filter = 'opacity(0%)'
-    setTimeout(()=>{divRepetirClave.style.visibility = 'hidden'
-        console.log('se ejecuta')
+    setTimeout(()=>{
+        divRepetirClave.style.visibility = 'hidden'
     }, 600)
 })
 
-
-
-
-
-
-
-
-function validarClave(clave, valoresPermitidos){
-    const resultados = [true, true, false, false] /*0: cantidad de caracteres, 1: valores permitidos, 2: mayúscula, 3:entero*/
-    if(clave.length<8 || clave.length>25){
-        resultados[0] = false
-    }
-    
+function validarClave(clave){
+    const valoresPermitidos = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz._"    
+    const resultados = [true, true, false, false]
+    if(clave.length<8 || clave.length>25) resultados[0] = false
     for(const i of clave){
-        if (valoresPermitidos.slice(0, 26).includes(i)){
-            resultados[2] = true
-        }
-        else if(valoresPermitidos.slice(26, 36).includes(i)){
-            resultados[3] = true
-        }
-
-        else if(!valoresPermitidos.slice(36, 64).includes(i)){
-            resultados[1] = false
-        }
-        
-        if(!resultados[1] && resultados[2] && resultados[3]){ /*Para hacer que el bucle no siga si ya se tienen todos los resultados*/
-            return resultados
-        }
+        if (valoresPermitidos.slice(0, 26).includes(i)) resultados[2] = true
+        else if(valoresPermitidos.slice(26, 36).includes(i)) resultados[3] = true
+        else if(!valoresPermitidos.slice(36, 64).includes(i)) resultados[1] = false
+        if(!resultados[1] && resultados[2] && resultados[3]) return resultados
     }
     return resultados
 }
 
-
-function validarUsuario(usuario, valoresPermitidos){
-    const resultados = [true, true] /*0: cantidad de caracteres, 1: valores permitidos */
-    
-    if(usuario.length<8 || usuario.length>25){
-        resultados[0] = false
-    }
-
+function validarUsuario(usuario){
+    const valoresPermitidos = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz._"    
+    const resultados = [true, true]
+    if(usuario.length<8 || usuario.length>25) resultados[0] = false
     for(const i of usuario){
         if(!valoresPermitidos.includes(i)){
             resultados[1] = false
@@ -131,11 +111,9 @@ function validarUsuario(usuario, valoresPermitidos){
     return resultados
 }
 
-
-/*Validación de registro de usuario*/
-/*Validar la clave introducida*/
+/*Validación de clave*/
 password1Registro.addEventListener('input', ()=>{
-    const resultados = validarClave(password1Registro.value, valoresPermitidos)
+    const resultados = validarClave(password1Registro.value)
     if(cantidadDeCaracteresClave && !resultados[0]){
         condicionesClave[1].style.color = 'red'
         cantidadDeCaracteresClave = false
@@ -151,7 +129,6 @@ password1Registro.addEventListener('input', ()=>{
             valoresPermitidosClave = false
         }
     }
-
     else if(!valoresPermitidosClave){
         condicionesClave[0].style.color = 'hsl(273, 100%, 50%)'
         valoresPermitidosClave = true
@@ -164,8 +141,8 @@ password1Registro.addEventListener('input', ()=>{
         }
     }
     else if(contieneMayusculas){
-    condicionesClave[2].style.color = 'red'
-    contieneMayusculas = false
+        condicionesClave[2].style.color = 'red'
+        contieneMayusculas = false
     }
 
     if (resultados[3]){
@@ -175,15 +152,14 @@ password1Registro.addEventListener('input', ()=>{
         }
     }
     else if(contieneEnteros){
-    condicionesClave[3].style.color = 'red'
-    contieneEnteros = false
+        condicionesClave[3].style.color = 'red'
+        contieneEnteros = false
     }
 })
 
-
-/*Validar el usuario introducido*/
+/*Validación de usuario*/
 nombreUsuarioRegistro.addEventListener('input', ()=>{
-    const resultados = validarUsuario(nombreUsuarioRegistro.value, valoresPermitidos)
+    const resultados = validarUsuario(nombreUsuarioRegistro.value)
     if (!resultados[0]){
         if(cantidadDeCaracteresUsuario){
             cantidadDeCaracteresUsuario = false
@@ -194,7 +170,6 @@ nombreUsuarioRegistro.addEventListener('input', ()=>{
         cantidadDeCaracteresUsuario = true
         condicionesUsuario[1].style.color = 'hsl(273, 100%, 50%)'
     }
-
 
     if (!resultados[1]){
         if(valoresPermitidosUsuario){
@@ -208,182 +183,257 @@ nombreUsuarioRegistro.addEventListener('input', ()=>{
     }
 })
 
-
-/*Validación de intento de inicio de sesión*/
+/*Inicio de sesión*/
 btnInicioSes.addEventListener('click', ()=>{
     const clave = passwordInicio.value
     const resultadosClave = validarClave(clave)
     const resultadosUsuario = validarUsuario(nombreDeUsuarioInicio.value)
     let resultadoFinal = true
-    
     for(const i of resultadosClave){
-        if(!i){
-            resultadoFinal = false
-            break
-        }
+        if(!i){ resultadoFinal = false; break }
     }
-    
     if(resultadoFinal){
         for (const i of resultadosUsuario)
-            if(!i){
-                resultadoFinal = false
-                break
-            }
+            if(!i){ resultadoFinal = false; break }
     }
-
     if(resultadoFinal){
-        console.log('inicio de sesi')
+        iniciarSesion(nombreDeUsuarioInicio.value, clave) 
     }
     else{
-        console.log('usuario o contraseña incorrectos')
+        mostrarErrores('Usuario o contraseña no cumplen el formato')
     }
 })
 
-
-/*Definir una solicitud fetch para recibir y enviar los datos*/
-
-/*Solicitud de registro */
+/*Registro*/
 password2Registro.addEventListener('input', ()=>{
     if(password2Registro.value == password1Registro.value){
         divRepetirClave.style.filter = "opacity(0%)"
         setTimeout(()=>{
             divRepetirClave.style.visibility = 'hidden'
         }, 600)
-        return console.log('se ha enviado una solicitud fetch') /************************************************************* */
+        return registrarUsuario(nombreUsuarioRegistro.value, password1Registro.value, claveSecreta.value)
     }
 })
 
+const baseURL = 'http://localhost:5000/'
 
 async function registrarUsuario(usuario, clave, claveSecreta){
     try{
-        const respuesta = await fetch(`http://localhost:5000/registro`, {
+        const respuesta = await fetch(`${baseURL}register`, {
             method: 'POST',
-            headers: {
-                'Content-Type' : 'application/json'
-            },
-            body: JSON.stringify({
-                "usuario" : usuario,
-                "clave" : clave, 
-                "claveSecreta" : claveSecreta
-            })
+            headers: { 'Content-Type' : 'application/json' },
+            body: JSON.stringify({ usuario, clave, claveSecreta })
         })
-        if (!respuesta.ok){
-            /*si el servidor responde con un error intentamos obtener el mensaje*/
-            const datosDelError = await respuesta.json()
-            throw new Error(datosDelError.mensaje || `Error: ${respuesta.status}`)
-        }
-
-        /*Parsear la respuesta JSON*/
         const datos = await respuesta.json()
-        return datos /*Falta procesar los datos**************************************************************/
+        if (!respuesta.ok){
+            mostrarErrores(datos.error)
+            return
+        }
+        divInicioSes.style.opacity = '0%'
+        divRegistro.style.opacity = '0%'
+        body.style.backgroundColor = 'white'
+        setTimeout(()=>{
+            divInicioSes.remove()
+            divRegistro.remove()
+            // Eliminar partículas correctamente
+            const particlesContainer = document.getElementById('particles-js')
+            if (particlesContainer) particlesContainer.remove()
+            divProcesarEventos.style.opacity = '100%'
+            divProcesarEventos.style.display = 'flex'
+        }, 750)
+        alert('Registro exitoso')
+        solicitarEventos()
     }
     catch(error){
-        throw error /*Falta procesar el error*********************************************** */
+        console.log(error)
+        mostrarErrores('Error de conexión')
     }
 }
-/*SolicituDeInicio */
-    
 
+async function iniciarSesion(usuario, clave){
+    try{
+        const respuesta = await fetch(`${baseURL}login`, {
+            method: 'POST',
+            headers: { 'Content-Type' : 'application/json' },
+            body: JSON.stringify({ usuario, clave })
+        })
+        const datos = await respuesta.json()
+        if(!respuesta.ok){
+            mostrarErrores(datos.error)
+            return
+        }
+        divInicioSes.style.opacity = '0%'
+        divRegistro.style.opacity = '0%'
+        setTimeout(()=>{
+            divInicioSes.remove()
+            divRegistro.remove()
+            const particlesContainer = document.getElementById('particles-js')
+            if (particlesContainer) particlesContainer.remove()
+            divProcesarEventos.style.opacity = '100%'
+            divProcesarEventos.style.display = 'flex'
+        }, 750)
+        body.style.backgroundColor = 'white'
+        solicitarEventos()
+    }
+    catch(error){
+        console.log(error)
+        mostrarErrores('Error de conexión')
+    }
+}
 
-/*Ejecutar el efecto de partículas */
+const divErrores = document.getElementById('divErrores')
+const textoErrores = document.getElementById('textoErrores')
+function mostrarErrores(error){
+    textoErrores.innerText = error
+    divErrores.style.opacity = "100%"
+    setTimeout(()=>{
+        divErrores.style.opacity = "0%"
+    }, 5000)
+}
+
+/*PROCESAMIENTO DE EVENTOS*/
+const divMostrarEventos = document.getElementById('divMostrarEventos')
+
+async function solicitarEventos(){
+    try{
+        const respuesta = await fetch(url+'eventos')
+        if (!respuesta.ok) throw new Error(`ErrorHTTP: ${respuesta.status}`)
+        const datos = await respuesta.json()
+        divMostrarEventos.innerHTML = ''
+        let contador = 0
+        for (const i of datos){
+            const div = document.createElement('div')
+            div.classList.add('evento')
+            divMostrarEventos.append(div)
+
+            const nombreEvento = document.createElement('h3') 
+            nombreEvento.innerText = i.nombreEvento
+            div.append(nombreEvento)
+
+            const inicio = document.createElement('h3')
+            inicio.innerText = `Inicio: ${i.momentoInicial.slice(0, 10)} | ${i.momentoInicial.slice(12, 19)}`
+            div.append(inicio)
+
+            const fin = document.createElement('h3')
+            fin.innerText = `Fin: ${i.momentoFinal.slice(0, 10)} | ${i.momentoFinal.slice(12, 19)}`
+            div.append(fin)
+
+            const lugar = document.createElement('h3')
+            lugar.innerText = i.lugar
+            div.append(lugar)
+
+            const divRecursos = document.createElement('div')
+            div.append(divRecursos)
+            const textoRecursos = document.createElement('h3')
+            textoRecursos.innerText = 'Recursos: '
+            divRecursos.append(textoRecursos)
+            const lista = Object.entries(i.recursos)
+            for (let [clave, valor] of lista){
+                const recurso = document.createElement('h3')
+                recurso.innerText = `${clave}: ${valor}`
+                divRecursos.append(recurso)
+            }
+
+            const btnEliminar = document.createElement('button')
+            btnEliminar.id = contador
+            btnEliminar.type = 'button'
+            btnEliminar.innerText = 'Eliminar'
+            btnEliminar.addEventListener('click', ()=>{
+                if (confirm('¿Seguro que quieres eliminar este evento?')) {
+                    eliminarEvento(btnEliminar.id)
+                }
+            })
+            div.append(btnEliminar)
+            contador++
+        }
+    }
+    catch (error){
+        console.error('Error:', error)
+        mostrarErrores('Error al cargar eventos')
+    }
+}
+
+async function eliminarEvento(indice){
+    try{
+        const res = await fetch(`${url}eliminarEvento/${indice}`, { method: 'DELETE' })
+        if (!res.ok) throw new Error('Falló')
+        divMostrarEventos.innerHTML = ''
+        solicitarEventos()
+    }
+    catch{
+        mostrarErrores('No se pudo eliminar')
+    }
+}
+
+const btnEnviarEvento = document.getElementById('btnEnviarEvento')
+btnEnviarEvento.addEventListener('click', async ()=>{
+    await enviarEvento()
+})
+
+function obtenerDatosEvento(){
+    const nombreEvento = document.getElementById('nombreEvento').value
+    const lugar = document.getElementById('lugar').value
+    const momentoInicial = document.getElementById('momentoInicial').value
+    const momentoFinal = document.getElementById('momentoFinal').value
+
+    const recursos = {
+        piano: document.getElementById('piano').value || 0,
+        guitarra: document.getElementById('guitarra').value || 0,
+        bateria: document.getElementById('bateria').value || 0,
+        microfono: document.getElementById('microfono').value || 0,
+        amplificador: document.getElementById('amplificador').value || 0,
+        bajo: document.getElementById('bajo').value || 0,
+        violin: document.getElementById('violin').value || 0,
+        brea: document.getElementById('brea').value || 0,
+        camara: document.getElementById('camara').value || 0
+    }
+    return { nombreEvento, lugar, momentoInicial, momentoFinal, recursos }
+}
+
+async function enviarEvento(){
+    const datos = obtenerDatosEvento()
+    try{
+        const respuesta = await fetch(`${url}ingresarEvento`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        })
+        if (!respuesta.ok){
+            const errorData = await respuesta.json()
+            mostrarErrores(errorData.error || 'Error al crear evento')
+            return
+        }
+        const resultado = await respuesta.json()
+        console.log(resultado.mensaje)
+        divMostrarEventos.innerHTML = ''
+        solicitarEventos()
+    }
+    catch(error){
+        mostrarErrores('Error de conexión')
+    }
+}
+
+/* Inicializar partículas */
 particlesJS('particles-js', {
     particles: {
-        number: {
-            value: 120,
-            density: {
-                enable: true,
-                value_area: 800
-            }
-        },
-        color: {
-            value: "#ffffff"
-        },
-        shape: {
-            type: "circle",
-            stroke: {
-                width: 0,
-                color: "#000000"
-            }
-        },
-        opacity: {
-            value: 0.5,
-            random: false,
-            anim: {
-                enable: false,
-                speed: 1,
-                opacity_min: 0.1,
-                sync: false
-            }
-        },
-        size: {
-            value: 3,
-            random: true,
-            anim: {
-                enable: false,
-                speed: 40,
-                size_min: 0.1,
-                sync: false
-            }
-        },
-        line_linked: {
-            enable: true,
-            distance: 150,
-            color: "#ffffff",
-            opacity: 0.4,
-            width: 1
-        },
-        move: {
-            enable: true,
-            speed: 6,
-            direction: "none",
-            random: false,
-            straight: false,
-            out_mode: "out",
-            bounce: false,
-            attract: {
-                enable: false,
-                rotateX: 600,
-                rotateY: 1200
-            }
-        }
+        number: { value: 120, density: { enable: true, value_area: 800 } },
+        color: { value: "#ffffff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.5, random: false },
+        size: { value: 3, random: true },
+        line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+        move: { enable: true, speed: 6, direction: "none", random: false, straight: false, out_mode: "out" }
     },
     interactivity: {
         detect_on: "canvas",
         events: {
-            onhover: {
-                enable: true,
-                mode: "repulse"
-            },
-            onclick: {
-                enable: true,
-                mode: "push"
-            },
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" },
             resize: true
         },
         modes: {
-            grab: {
-                distance: 400,
-                line_linked: {
-                    opacity: 1
-                }
-            },
-            bubble: {
-                distance: 400,
-                size: 40,
-                duration: 2,
-                opacity: 8,
-                speed: 3
-            },
-            repulse: {
-                distance: 200,
-                duration: 0.4
-            },
-            push: {
-                particles_nb: 4
-            },
-            remove: {
-                particles_nb: 2
-            }
+            repulse: { distance: 200, duration: 0.4 },
+            push: { particles_nb: 4 }
         }
     },
     retina_detect: true
