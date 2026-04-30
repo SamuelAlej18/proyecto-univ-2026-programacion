@@ -18,6 +18,10 @@
             <button type="button">No</button>
         </div>
     </div>
+
+    <div id="divErrores">
+        <h3 id="textoErrores"></h3>
+    </div>
     
     <div id="divInicioSes" class="divsIniciales elementoTransparente">
         <h1>Inicio de sesión</h1>
@@ -62,42 +66,72 @@
             </div>
         </div>
     </div>
-    
-    <div id="divErrores">
-        <h3 id="textoErrores">Ejemplo</h3>
-    </div>
-    
+       
     <div id="procesamientoDeEventos">
         <div id="crearEventos">
-            <h1>Crear Evento</h1>
-            <h2>Nombre del Evento</h2>
-            <input id="nombreEvento" type="text">
-            <h2>Lugar</h2>
-            <select id="lugar">
-                <option value="Anfiteatro del Bosque Plateado">Anfiteatro del Bosque Plateado</option>
-                <option value="Teatro Recuerdos">Teatro Recuerdos</option>
-                <option value="Cuarto del Rock">Cuarto del Rock</option>
-                <option value="Sala 23">Sala 23</option>
-            </select>
-            <h2>Fecha y hora de inicio</h2>
-            <input type="datetime-local" id="momentoInicial">
-            <h2>Fecha y hora de fin</h2>
-            <input type="datetime-local" id="momentoFinal">
-            <div>
-                <h2>Recursos</h2>
-                <div id="divRecursos">
-                    <div><h3>Piano</h3><input id="piano" type="number" min="0" max="1" class="inputPeque" value="0"></div>
-                    <div><h3>Guitarra</h3><input id="guitarra" type="number" min="0" max="3" class="inputPeque" value="0"></div>
-                    <div><h3>Batería</h3><input id="bateria" type="number" min="0" max="1" class="inputPeque" value="0"></div>
-                    <div><h3>Micrófonos</h3><input id="microfono" type="number" min="0" max="10" class="inputPeque" value="0"></div>
-                    <div><h3>Amplificadores</h3><input id="amplificador" type="number" min="0" max="10" class="inputPeque" value="0"></div>
-                    <div><h3>Violín</h3><input id="violin" type="number" min="0" max="1" class="inputPeque" value="0"></div>
-                    <div><h3>Brea</h3><input id="brea" type="number" min="0" max="1" class="inputPeque" value="0"></div>
-                    <div><h3>Bajo</h3><input id="bajo" type="number" min="0" max="1" class="inputPeque" value="0"></div>
-                    <div><h3>Cámaras</h3><input id="camara" type="number" min="0" max="1" class="inputPeque" value="0"></div>
+            <h1 style="color: hsl(0, 0%, 100%); background-color: #320c7e;">Crear Evento</h1>
+            <div class="ingresarDatos">
+                <div>
+                    <h2>Nombre</h2>
+                    <input id="nombreEvento" type="text">
+                </div>
+               
+                <div>
+                    <h2>Lugar</h2>
+                    <select id="lugar">
+                        <option value="Anfiteatro del Bosque Plateado">Anfiteatro del Bosque Plateado</option>
+                        <option value="Teatro Recuerdos">Teatro Recuerdos</option>
+                        <option value="Cuarto del Rock">Cuarto del Rock</option>
+                        <option value="Sala 23">Sala 23</option>
+                    </select>
                 </div>
             </div>
-            <button type="button" id="btnEnviarEvento">Enviar Evento</button>
+
+            <div class="ingresarDatos">
+                <div>
+                    <h2>Momento de inicio</h2>
+                    <input type="datetime-local" id="momentoInicial">
+                </div>
+    
+                <div>
+                    <h2>Momento de fin</h2>
+                    <input type="datetime-local" id="momentoFinal">
+                </div>
+            </div>
+            <div>
+                <h2>Artista Mundial</h2>
+                <input type="checkbox" id="artistaMundial">
+            </div>
+            <div>  
+                <h2>Recursos</h2>
+                <div id="divRecursos">
+                    <div>
+                        <h3>Piano</h3><input id="piano" type="number" min="0" max="1" class="inputPeque" value="0">
+                    </div>
+                    <div>
+                        <h3>Guitarra</h3><input id="guitarra" type="number" min="0" max="3" class="inputPeque" value="0">
+                    </div>
+                    <div>
+                        <h3>Batería</h3><input id="bateria" type="number" min="0" max="1" class="inputPeque" value="0">
+                    </div>
+                    <div>   
+                        <h3>Micrófonos</h3><input id="microfono" type="number" min="0" max="10" class="inputPeque" value="0">
+                    </div>
+                    <div>
+                        <h3>Amplificadores</h3><input id="amplificador" type="number" min="0" max="10" class="inputPeque" value="0"></div>
+                    <div>
+                        <h3>Violín</h3><input id="violin" type="number" min="0" max="1" class="inputPeque" value="0"></div>
+                    <div>
+                        <h3>Brea</h3><input id="brea" type="number" min="0" max="1" class="inputPeque" value="0"></div>
+                    <div>
+                        <h3>Cámaras</h3><input id="camara" type="number" min="0" max="1" class="inputPeque" value="0">
+                    </div>
+                </div>
+            </div>
+            <div id="botonesCrearEventos">
+                <button type="button" id="btnEnviarEvento">Enviar Evento</button>
+                <button type="button" id="btnBuscarAlternativa">Buscar fecha alternativa</button>
+            </div>
         </div>
         <div id="divMostrarEventos"></div>
     </div>

@@ -1,0 +1,67 @@
+@baseUrl = http://localhost:5000
+### 1. Registrar un usuario (POST /register)
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+    "usuario": "123456728",
+    "clave": "test1234",
+    "claveSecreta": "El concierto"
+}
+
+### 2. Iniciar sesión (POST /login)
+POST   {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "usuario": "te1Stxxxuser",
+    "clave": "Test1234"
+}
+
+### 3. Obtener todos los eventos (GET /eventos)
+GET {{baseUrl}}/eventos
+
+### 4. Crear un nuevo evento (POST /ingresarEvento)
+POST {{baseUrl}}/ingresarEvento
+Content-Type: application/json
+
+{
+    "lugar": "Anfiteatro del Bosque Plateado",
+    "nombreEvento": "Ejemplo",
+    "momentoInicial": "2026-07-14T11:00:00",
+    "momentoFinal": "2026-07-15T11:40:00",
+    "artistaMundial" : true,
+    "recursos": {
+        "guitarras": 1,
+        "piano": 1
+    }
+}
+
+###
+POST  {{baseUrl}}/eventoEnFuturo
+Content-Type: application/json
+
+{
+    "lugar": "Anfiteatro del Bosque Plateado",
+    "nombreEvento": "a",
+    "momentoInicial": "2028-07-10T11:00:00",
+    "momentoFinal": "2028-07-11T11:40:00",
+    "recursos": {
+        "guitarras": 1
+    }
+}
+
+### 5. Intentar crear un evento inválido (sin recursos)
+POST {{baseUrl}}/ingresarEvento
+Content-Type: application/json
+
+{
+    "nombreEvento": "",
+    "momentoInicial": "2026-07-11T10:00:00",
+    "momentoFinal": "2026-07-12T06:00:00",
+    "recursos": {"guitarras": 2}
+}
+###
+DELETE  {{baseUrl}}/eliminarEvento/0
+
+

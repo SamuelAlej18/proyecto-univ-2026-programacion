@@ -203,7 +203,7 @@ btnInicioSes.addEventListener('click', ()=>{
         mostrarErrores('Usuario o contraseña no cumplen el formato')
     }
 })
-
+/*Definir una solicitud fetch para recibir y enviar los datos*/
 /*Registro*/
 password2Registro.addEventListener('input', ()=>{
     if(password2Registro.value == password1Registro.value){
@@ -235,7 +235,6 @@ async function registrarUsuario(usuario, clave, claveSecreta){
         setTimeout(()=>{
             divInicioSes.remove()
             divRegistro.remove()
-            // Eliminar partículas correctamente
             const particlesContainer = document.getElementById('particles-js')
             if (particlesContainer) particlesContainer.remove()
             divProcesarEventos.style.opacity = '100%'
@@ -249,7 +248,7 @@ async function registrarUsuario(usuario, clave, claveSecreta){
         mostrarErrores('Error de conexión')
     }
 }
-
+/*SolicituDeInicio */
 async function iniciarSesion(usuario, clave){
     try{
         const respuesta = await fetch(`${baseURL}login`, {
@@ -322,6 +321,13 @@ async function solicitarEventos(){
             lugar.innerText = i.lugar
             div.append(lugar)
 
+            const artistaMundial = document.createElement('h3')
+            if(i.artistaMundial == true){
+                artistaMundial.innerText = 'Tiene un artista mundial'
+            }
+            else(artistaMundial.innerText = 'Sin un artista mundial')
+            div.append(artistaMundial)
+
             const divRecursos = document.createElement('div')
             div.append(divRecursos)
             const textoRecursos = document.createElement('h3')
@@ -375,19 +381,41 @@ function obtenerDatosEvento(){
     const lugar = document.getElementById('lugar').value
     const momentoInicial = document.getElementById('momentoInicial').value
     const momentoFinal = document.getElementById('momentoFinal').value
-
+    const artistaMundial = document.getElementById('artistaMundial').checked
+    console.log(artistaMundial)
     const recursos = {
         piano: document.getElementById('piano').value || 0,
         guitarra: document.getElementById('guitarra').value || 0,
         bateria: document.getElementById('bateria').value || 0,
         microfono: document.getElementById('microfono').value || 0,
         amplificador: document.getElementById('amplificador').value || 0,
-        bajo: document.getElementById('bajo').value || 0,
         violin: document.getElementById('violin').value || 0,
         brea: document.getElementById('brea').value || 0,
         camara: document.getElementById('camara').value || 0
     }
-    return { nombreEvento, lugar, momentoInicial, momentoFinal, recursos }
+    return { nombreEvento, lugar, momentoInicial, momentoFinal, recursos, artistaMundial }
+}
+
+const btnBuscarAlternativa = document.getElementById('btnBuscarAlternativa');
+if (btnBuscarAlternativa) {
+    btnBuscarAlternativa.addEventListener('click', async () => {
+        const datos = obtenerDatosEvento();
+        try {
+            const respuesta = await fetch(`${url}eventoEnFuturo`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+            const resultado = await respuesta.json();
+            if (!respuesta.ok) {
+                mostrarErrores(resultado.error || 'No se pudo encontrar fecha alternativa');
+            } else {
+                mostrarErrores(resultado.mensaje);
+            }
+        } catch (error) {
+            mostrarErrores('Error de conexión al buscar alternativa');
+        }
+    });
 }
 
 async function enviarEvento(){
@@ -413,7 +441,7 @@ async function enviarEvento(){
     }
 }
 
-/* Inicializar partículas */
+/* Ejecutar el efecto de parículas */
 particlesJS('particles-js', {
     particles: {
         number: { value: 120, density: { enable: true, value_area: 800 } },

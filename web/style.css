@@ -37,6 +37,7 @@ button{
 select{
     background-color: transparent;
     color: #7700ff;
+    padding: 4px;
 }
 button:hover{
     border-color: #7e00e4;
@@ -102,6 +103,14 @@ input:hover{
     background-color: #0000008c;
 }
 
+#botonesCrearEventos{
+   /*justify-self: flex-end;*/
+   align-self: flex-end;
+}
+#botonesCrearEventos > button{
+    color: hsl(0, 0%, 100%);
+    background-color: #320c7e;
+}
 
 .elementoTransparente{
    display: none;
@@ -111,12 +120,13 @@ input:hover{
     display: flex;
 }
 
+
 #procesamientoDeEventos{
-    width: 80vw;
-    height: 90vh;
-    max-height: 90vh;
-    overflow-y: auto;
     padding: 15px;
+    min-width: 100vw;
+    height: 90vh;
+    overflow-y: auto;
+    /*padding: 15px 0;*/
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -128,22 +138,36 @@ input:hover{
     color: hsl(285, 100%, 30%);
     border: solid 1px #320c7e;
 }
-
+.ingresarDatos{
+    display: flex;
+    justify-content: space-between;
+    width: min-content;
+    min-width: 560px;
+}
+.ingresarDatos > div{
+    margin: 25px;
+}
 #divErrores{
     position: fixed;
     left: 0;
     bottom: 0;
-    background-color: #746f6f;
+    background-color: transparent;
     z-index: 10;
-    margin: 15px;
+    padding: 10px;
     border-radius: 7%;
-    border: solid 1px black;
+    color: #7700ff;
+    opacity: 0%;
+    backdrop-filter: blur(5px);
 }
-#divErrores > h3{
-    color: black;
+
+#artistaMundial{
+    scale: 1.5;
+    position: relative;
+    top: 6px;
 }
 
 #divRecursos{
+    max-width: 560px;
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
@@ -152,13 +176,19 @@ input:hover{
 }
 #crearEventos{
     width: 45%;
-    height: 80%;
+    max-width: 560px;
+    min-width: max-content;
+    
+    height: 100%;
     justify-content: center;
-    align-items: self-start;
+}
+#crearEventos >div{
+    margin: 10px 0;
 }
 #divMostrarEventos{
+    min-width: 350px;
     width: 45%;
-    height: 80%;
+    height: 100%;
     justify-content: center;
     align-items: center;
 }
