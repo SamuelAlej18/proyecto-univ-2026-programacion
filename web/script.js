@@ -373,7 +373,11 @@ async function eliminarEvento(indice){
 
 const btnEnviarEvento = document.getElementById('btnEnviarEvento')
 btnEnviarEvento.addEventListener('click', async ()=>{
+    btnEnviarEvento.disabled = true
+    btnEnviarEvento.textContent = 'Enviando...'
     await enviarEvento()
+    btnEnviarEvento.disabled = false
+    btnEnviarEvento.textContent = 'Enviar Evento'
 })
 
 function obtenerDatosEvento(){
@@ -399,6 +403,8 @@ function obtenerDatosEvento(){
 const btnBuscarAlternativa = document.getElementById('btnBuscarAlternativa');
 if (btnBuscarAlternativa) {
     btnBuscarAlternativa.addEventListener('click', async () => {
+        btnBuscarAlternativa.disabled = true
+        btnBuscarAlternativa.textContent = 'Buscando...'
         const datos = obtenerDatosEvento();
         try {
             const respuesta = await fetch(`${url}eventoEnFuturo`, {
@@ -414,6 +420,10 @@ if (btnBuscarAlternativa) {
             }
         } catch (error) {
             mostrarErrores('Error de conexión al buscar alternativa');
+        }
+        finally{
+            btnBuscarAlternativa.disabled = false
+            btnBuscarAlternativa.textContent = 'Buscar fecha alternativa'
         }
     });
 }
