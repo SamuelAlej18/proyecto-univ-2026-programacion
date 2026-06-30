@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import os, json
 from crearUsuario import inicioSes, crearUsuario
-from funciones import comprobarExistenciaArchivo, convertirStrDatetime, verificarEvento,calcularMayorDemandaDeRecursos, llamarFuncBuscarIndiceGuardar,eliminarEvento, verificarPosibilidadEventoFuturo, eliminarRecursosSobrantes, obtenerColisionesDiasCompletos, verificarColisionConArtistaMundial, verificarEventoMismoNombreYDia
+from funciones import comprobarExistenciaArchivo, convertirStrDatetime, verificarEvento,calcularMayorDemandaDeRecursos, llamarFuncBuscarIndiceGuardar,eliminarEvento, verificarPosibilidadEventoFuturo, eliminarRecursosSobrantes, obtenerColisionesDiasCompletos, verificarColisionConArtistaMundial, verificarEventoMismoNombreYDia, eliminarEventosExpirados
 
 
 app = Flask(__name__)
@@ -26,11 +26,11 @@ inventario = {
     "guitarra": 5,
     "bateria": 3,
     "piano": 2,
-    "amplificador": 5,
+    "amplificador": 6,
     "microfono": 10,
     "violin": 2,
     "brea": 2,
-    "camara": 10
+    "camara": 12
 }
 
 with open(rutaUsuarios, "r", encoding='utf-8') as datos:
@@ -38,7 +38,12 @@ with open(rutaUsuarios, "r", encoding='utf-8') as datos:
 
 def cargarEventos():
     with open(rutaEventos, "r", encoding='utf-8') as datos:
-        return json.load(datos)
+        eventos = json.load(datos) 
+        eventosPosteriores = eliminarEventosExpirados(eventos)
+        if len(eventosPosteriores!= len(eventos)):
+            with open(rutaEventos, 'w', encoding='utf-8') as f:
+                json.dump(eventosPosteriores, f, indent=2, ensure_ascii= False)
+        return eventosPosteriores
 
 def guardarEvento(momentoInicio, momentoFin, evento):
     eventos = cargarEventos()
@@ -80,10 +85,12 @@ def obtenerEventos():
 @app.route("/ingresarEvento", methods=["POST"])
 def ingresarEvento():
     datos = request.get_json()
+    datos['nombreEvento'] = datos['nombreEvento'].strip() #hace que el nombre del evento recibido se guarde sin los espacios del inicio o final
     resultado = verificarEvento(datos)
     if not resultado[0]:
         return jsonify({"error": resultado[1]}), 400
 
+    nombreEvento = datos['nombreEvento']
     momentoInicial = datos['momentoInicial']
     momentoFinal = datos['momentoFinal']
     lugar = datos['lugar']
@@ -93,7 +100,6 @@ def ingresarEvento():
     else:
         artistaMundial = False
     recursos = eliminarRecursosSobrantes(datos['recursos'])
-    nombreEvento = datos['nombreEvento']
     if not recursos:
         return jsonify({"error": "No se enviaron recursos válidos"}), 400
 
@@ -103,7 +109,6 @@ def ingresarEvento():
     if inicio_dt is None or fin_dt is None:
         return jsonify({"error": "Fechas inválidas"}), 400
 
-    # Comprobar demanda máxima
     if not calcularMayorDemandaDeRecursos(eventos, inicio_dt, fin_dt, recursos, inventario, lugar):
         return jsonify({"error": "Recursos insuficientes o colisión de lugar"}), 400
 

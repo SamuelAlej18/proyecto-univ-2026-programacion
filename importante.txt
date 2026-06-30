@@ -1,3 +1,0 @@
-Iniciar la primera vez en local requiere internet, para que pueda utilizar la librería de las partículas.
-
-Las dependencias del servidor están en el requirements.txt que está dentro de esa carpeta.

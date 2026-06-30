@@ -20,7 +20,7 @@ def verificarSolapamiento(inicioIntervaloA, finIntervaloA, inicioIntervaloB, fin
     return True
 
 #Comprobar si un archivo existe en la base de datos:
-def comprobarExistenciaArchivo(ruta):
+def comprobarExistenciaArchivo(ruta): 
     return os.path.exists(ruta) and os.path.isfile(ruta)
 
 def verificarEvento(evento):
@@ -28,6 +28,11 @@ def verificarEvento(evento):
     for campo in campos:
         if campo not in evento or evento[campo] is None:
             return [False, f'Falta el campo "{campo}"'] #verificar que todos los campos que se requieren estén, y los lugares
+    
+    nombre = evento['nombreEvento']
+    nombreValidado = validarNombreEvento(nombre)
+    if not nombreValidado[0]:
+        return [False, nombreValidado[1]]
     
     lugar = evento['lugar']
     lugares_validos = ['Anfiteatro del Bosque Plateado', 'Sala 23', 'Teatro Recuerdos', 'Cuarto del Rock']
@@ -40,7 +45,7 @@ def verificarEvento(evento):
     momentoInicial = convertirStrDatetime(evento["momentoInicial"])
     momentoFinal = convertirStrDatetime(evento["momentoFinal"])
     if momentoInicial is None or momentoFinal is None:
-        return [False, 'Formato de fecha/hora incorrecto. Use (YYYY-MM-DDTHH:MM)']
+        return [False, 'Formato de fecha/hora incorrecto.']
 
     if momentoInicial >= momentoFinal:
         return [False, 'El momento inicial debe ser anterior al final']
@@ -51,6 +56,11 @@ def verificarEvento(evento):
     if duracion.total_seconds() > 259200:
         return [False, 'La duración máxima es de 3 días']
 
+    hoy = datetime.now()
+    limite = hoy + timedelta(days=1)
+    if momentoInicial < limite:
+        return [False, "El evento debe ser avisado con 24h de antelación"]
+    
     recursos = evento['recursos']
     if not recursos:
         return [False, 'El evento debe tener al menos un recurso']
@@ -64,8 +74,46 @@ def verificarEvento(evento):
         if valor_int < 0:
             return [False, f'El recurso "{clave}" no puede ser negativo']
         recursos[clave] = valor_int
+    
 
+    
+    camara = recursos.get('camara', 0)
+    if camara < 1:
+        return [False, "Se necesita como mínimo una cámara"]
+    
+    brea = recursos.get('brea', 0)  #se pone(x, 0) para que en caso de que el recurso no esté ponga cero
+    violin = recursos.get('violin', 0)
+    if (brea > 0 and violin == 0) or (brea == 0 and violin > 0):
+        return [False, 'Debes solicitar tanto brea como violín, o ningunos']
+    
+    guitarras = recursos.get('guitarra', 0)
+    amplificadores = recursos.get('amplificador', 0)
+    if guitarras == 0 and amplificadores > 0: 
+        return [False, 'No se pueden solicitar amplificadores sin guitarra'] #más un amplificador por si alguno falla
+    
+    if guitarras > 0 and amplificadores < guitarras+1:
+        return [False, 'Se necesitan la misma cantidad de amplificadores que de guitarras y dejar mínimo 1 de repuesto']
+    
+    piano = recursos.get('piano', 0)
+    bateria = recursos.get('bateria', 0)
+    if lugar == 'Sala 23' or lugar == 'Cuarto del Rock':
+        if piano > 0 and bateria > 0:
+            return[False, 'En este lugar no se admiten piano y batería al mismo tiempo por temas de espacio']
+        elif piano != 1:
+            return[False, 'En este lugar solo se admite un piano']
+        elif bateria != 1:
+            return [False, 'En este lugar solo se admite una batería']
+    
+    microfonos = recursos.get('microfono', 0) 
+    cantidadInstrumentosTotales = guitarras + violin + bateria + piano + microfonos
+ 
+    camarasNecesarias = (cantidadInstrumentosTotales+2)//3 #Se suma 2 para redondear por exceso en la división entera      
+    if camara < camarasNecesarias:
+        return [False, f"Se necesitan mínimo {camarasNecesarias} cámaras para estos instrumentos"]
+    
     return [True]
+
+
 
 #Realizar búsqueda binaria para encontrar la posición en la que se debe guardar un evento para mantener el orden
 def vaPrimeroEnLaBD(inicioEvento, finEvento, inicioOtroEvento, finOtroEvento): #retorna un valor booleano resultado de comprobar si un elemento va antes de otro
@@ -250,3 +298,28 @@ def verificarEventoMismoNombreYDia(colisionesDiasCompletos, nombreEvento):
     return False
 
 
+
+def validarNombreEvento(nombre):
+    valoresPermitidos = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz ,' #El nombre de un evento permite el espacio pero no al principio ni al final, por eso nombre.strip()
+    if not isinstance(nombre, str):
+        return [False, 'el objeto no es un texto']
+    nombreLimpio = nombre.strip()
+    for letra in nombreLimpio:
+        if letra not in valoresPermitidos:
+            return [False, 'El nombre puede contener exclusivamente caracteres de la A-Z, a-z, 0-9, espacio y coma']
+    
+    longitudNombre = len(nombreLimpio)
+    if longitudNombre>80:
+        return [False, 'El nombre no puede tener más de 80 caracteres']
+    elif longitudNombre<3:
+        return [False, 'El nombre no puede tener menos de 3 caracteres']
+    return [True]
+
+def eliminarEventosExpirados(listaEventos): #Elimina los eventos cuya fecha de finalización sea anterior a la fecha/hora actual
+    ahora = datetime.now()
+    eventosActivos = []
+    for evento in listaEventos:
+        finEvento = convertirStrDatetime(evento.get('momentoFinal'))
+        if finEvento is not None and finEvento >= ahora:
+            eventosActivos.append(evento)
+    return eventosActivos
